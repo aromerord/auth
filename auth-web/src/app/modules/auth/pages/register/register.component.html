@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-sm-8 col-md-6 col-lg-5 col-xl-5" style="margin-top: 7%;">
+      <h3 class="text-center mb-2">Registro</h3>
+      <form [formGroup]="form" (ngSubmit)="register()">
+
+        <div class="form-outline mb-4">
+          <label class="form-label" for="name">Nombre</label>
+          <input type="text" id="name" class="form-control" placeholder="Nombre" 
+            formControlName="name"/>
+        </div>
+
+        <div class="form-outline mb-4">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" id="email" class="form-control" placeholder="Email" 
+            formControlName="email"/>
+        </div>
+
+        <div class="form-outline mb-4">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Contraseña" 
+            formControlName="password"/>
+        </div>
+
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary mb-4" [disabled]="form.invalid">Registrarse</button>
+        </div>
+
+        <div class="text-center">
+          <p>¿Ya tienes una cuenta? <a href="#!" [routerLink]="['/login']">Acceder</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
