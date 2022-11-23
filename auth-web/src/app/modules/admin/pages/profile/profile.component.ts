@@ -23,7 +23,6 @@ export class ProfileComponent implements OnInit {
     console.log(this.authService.user);
 
     this.form.patchValue(this.authService.user);
-
     
   }
 
