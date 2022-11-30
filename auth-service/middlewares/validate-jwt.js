@@ -19,10 +19,11 @@ const validateJwt = (req, res = response, next) => {
 
   try {
 
-    // Se añaden a la request el uid y el name
-    const {uid, name} = jwt.verify(token, process.env.SECRET_JWT_SEED);
+    // Se añaden a la request el uid, el name y el email
+    const {uid, name, email} = jwt.verify(token, process.env.SECRET_JWT_SEED);
     req.uid = uid;
     req.name = name;
+    req.email = email;
     
   } catch (error) {
     return res.status(401).json({

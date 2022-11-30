@@ -5,20 +5,19 @@ import { environment } from 'src/environments/environment';
 import { Auth, User } from '../interfaces/auth.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   private url = `${environment.url}/auth`;
   private _user!: User;
 
-  constructor(protected http: HttpClient) { }
+  constructor(protected http: HttpClient) {}
 
   /**
    * Datos del usuario
    */
   get user(): User {
-    return { ...this._user }
+    return { ...this._user };
   }
 
   /**
@@ -28,17 +27,8 @@ export class AuthService {
    */
   public login(req: User): Observable<Auth> {
     return this.http.post<Auth>(`${this.url}/login`, req).pipe(
-      tap(res => {
-        if (res.ok) {
-          localStorage.setItem('token', res.token!);
-          this._user = {
-            uid: res.uid,
-            name: res.name,
-            email: res.email,
-          }
-        }
-      }),
-      catchError(e => of(e.error))
+      tap((res) => this.setToken(res)),
+      catchError((e) => of(e.error))
     );
   }
 
@@ -47,9 +37,10 @@ export class AuthService {
    * @param req Datos del usuario
    * @returns Datos del usuario y token
    */
-  public register(req: Auth): Observable<Auth> {
+  public register(req: User): Observable<Auth> {
     return this.http.post<Auth>(`${this.url}/register`, req).pipe(
-      catchError(e => of(e.error))
+      tap((res) => this.setToken(res)),
+      catchError((e) => of(e.error))
     );
   }
 
@@ -58,22 +49,18 @@ export class AuthService {
    * @returns Datos del usuario y token
    */
   public validateToken(): Observable<boolean> {
-    const headers = new HttpHeaders()
-      .set('x-token', localStorage.getItem('token') || '');
+    const headers = new HttpHeaders().set(
+      'x-token',
+      localStorage.getItem('token') || ''
+    );
 
-    return this.http.get<Auth>(`${this.url}/renew`, { headers })
-      .pipe(
-        map(res => {
-          localStorage.setItem('token', res.token!);
-          this._user = {
-            uid: res.uid,
-            name: res.name,
-            email: res.email,
-          }
-          return res.ok!;
-        }),
-        catchError(e => of(false))
-      );
+    return this.http.get<Auth>(`${this.url}/renew`, { headers }).pipe(
+      map((res) => {
+        this.setToken(res);
+        return res.ok!;
+      }),
+      catchError((e) => of(false))
+    );
   }
 
   /**
@@ -83,5 +70,18 @@ export class AuthService {
     localStorage.removeItem('token');
   }
 
-
+  /**
+   * Guarda el token en el localStorage y settea el usuario
+   * @param res
+   */
+  private setToken(res: Auth) {
+    if (res.ok) {
+      localStorage.setItem('token', res.token!);
+      this._user = {
+        uid: res.uid,
+        name: res.name,
+        email: res.email,
+      };
+    }
+  }
 }

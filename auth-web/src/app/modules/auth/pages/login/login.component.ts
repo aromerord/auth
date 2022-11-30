@@ -36,7 +36,7 @@ export class LoginComponent {
     this.authService.login(req).subscribe({
       next: (res) => {
         if (res.ok) {
-          this.toast.success('¡Bienvenido!', '');
+          this.toast.success('Login completado con éxito', '');
           this.router.navigateByUrl('/admin/perfil');
         } else {
           this.toast.error(res.msg, '');
