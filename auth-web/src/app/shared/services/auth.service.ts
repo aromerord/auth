@@ -53,7 +53,6 @@ export class AuthService {
       'x-token',
       localStorage.getItem('token') || ''
     );
-
     return this.http.get<Auth>(`${this.url}/renew`, { headers }).pipe(
       map((res) => {
         this.setToken(res);

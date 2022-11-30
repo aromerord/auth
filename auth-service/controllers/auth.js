@@ -77,7 +77,7 @@ const login = async (req, res = response) => {
       });
     }
     // Generación JWT
-    const token = await generateJWT(user.id, user.name, user.email);
+    const token = await generateJWT(user.id);
 
     return res.status(201).json({
       ok: true,
@@ -101,16 +101,25 @@ const login = async (req, res = response) => {
  */
 const renew = async (req, res) => {
 
-  const { uid, name, email } = req;
+  const { uid } = req;
+
+  const user = await User.findById(uid);
+
+  if(!user){
+    return res.status(400).json({
+      ok: false,
+      msg: 'Credenciales incorrectas'
+    });
+  }
 
   // Generación JWT
-  const token = await generateJWT(uid, name, email);
+  const token = await generateJWT(uid);
 
   return res.json({
     ok: true,
     uid,
-    name, 
-    email,
+    name: user.name, 
+    email: user.email,
     token
   });
 }
