@@ -1,0 +1,16 @@
+{
+  "registration": "Registro",
+  "name": "Nombre",
+  "email": "Email",
+  "password": "Contraseña",
+  "access": "Acceder",
+  "askAccount": "¿Ya tienes una cuenta?",
+  "askAccount2": "¿No tienes cuenta?",
+  "register": "Registrarse",
+  "registerOk": "Registro completado con éxito",
+  "loginOk": "Login completado con éxito",
+  "error": "Se ha producido un error en la aplicación.",
+  "login": "Login",
+  "profile": "Perfil",
+  "update": "Actualizar"
+}
