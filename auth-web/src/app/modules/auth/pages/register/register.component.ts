@@ -51,11 +51,12 @@ export class RegisterComponent {
       name: name,
       email: email,
       password: password,
+      registerDate: new Date()
     };
     this.authService.register(req).subscribe({
       next: (res: any) => {
-        if (res.ok) {
-          this.translate.get('registerOk').subscribe((msg: string) => {
+        if (res.id) {
+          this.translate.get('register_ok').subscribe((msg: string) => {
             this.toast.success(msg);
           });
           this.router.navigateByUrl('/perfil');
@@ -64,7 +65,7 @@ export class RegisterComponent {
         }
       },
       error: (e: any) => {
-        this.translate.get('error').subscribe((msg: string) => {
+        this.translate.get('err500').subscribe((msg: string) => {
           this.toast.error(msg);
         });
       },

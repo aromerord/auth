@@ -1,9 +1,10 @@
 const { response } = require("express");
 const jwt = require('jsonwebtoken');
+const errorCodes = require("../utils/errorCodes");
 
 /**
  * Comprueba que el token es valido y en caso de serlo, añade a la 
- * request el id y el name para generar un nuevo token
+ * request id, name, email y role para generar un nuevo token
  */
 const validateJwt = (req, res = response, next) => {
 
@@ -13,24 +14,25 @@ const validateJwt = (req, res = response, next) => {
   if(!token){
     return res.status(401).json({
       ok: false,
-      msg: 'Error en el token'
+      code: errorCodes.ERR401_TOKEN.code,
+      msg: errorCodes.ERR401_TOKEN.msg,
     });
   }
 
   try {
-
-    // Se añaden a la request el id, el name y el email
-    const {id, name, email} = jwt.verify(token, process.env.SECRET_JWT_SEED);
+    // Se añade a la request el id
+    const { id, role } = jwt.verify(token, process.env.SECRET_JWT_SEED);
     req.id = id;
-    req.name = name;
-    req.email = email;
+    req.role = role;
     
   } catch (error) {
     return res.status(401).json({
       ok: false,
-      msg: 'Token no válido'
+      code: errorCodes.ERR401_TOKEN.code,
+      msg: errorCodes.ERR401_TOKEN.msg,
     });
   }
+
   next();
 }
 

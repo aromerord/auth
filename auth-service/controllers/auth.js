@@ -2,6 +2,7 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const { generateJWT } = require('../helpers/jwt');
 const User = require('../models/User');
+const errorCodes = require("../utils/errorCodes");
 
 /**
  * Registro de usuario
@@ -17,7 +18,8 @@ const register = async (req, res = response) => {
     if(user){
       return res.status(400).json({
         ok: false,
-        msg: 'El email ya está registrado'
+        code: errorCodes.ERR400_EMAIL_REGISTERED.code,
+        msg: errorCodes.ERR400_EMAIL_REGISTERED.msg,
       });
     }
     // Creación del objeto usuario
@@ -28,13 +30,12 @@ const register = async (req, res = response) => {
     user.password = bcrypt.hashSync(password, salt);
 
     // Generación del JWT
-    const token = await generateJWT(user.id);
+    const token = await generateJWT(user.id, user.role);
 
     // Guardado en la BD
     await user.save();
 
     return res.status(201).json({
-      ok: true,
       id: user.id,
       name: user.name,
       email: user.email,
@@ -46,7 +47,8 @@ const register = async (req, res = response) => {
     console.log(error);
     return res.status(500).json({
       ok: false,
-      msg: 'Se ha producido un error en la aplicación, contacte con el administrador'
+      code: errorCodes.ERR500.code,
+      msg: errorCodes.ERR500.msg,
     });
   }
 }
@@ -65,7 +67,8 @@ const login = async (req, res = response) => {
     if(!user){
       return res.status(400).json({
         ok: false,
-        msg: 'Credenciales incorrectas'
+        code: errorCodes.ERR400.code,
+        msg: errorCodes.ERR400.msg,
       });
     }
     // Comprobación de la contraseña
@@ -74,14 +77,14 @@ const login = async (req, res = response) => {
     if(!validPassword){
       return res.status(400).json({
         ok: false,
-        msg: 'Credenciales incorrectas'
+        code: errorCodes.ERR400.code,
+        msg: errorCodes.ERR400.msg,
       });
     }
     // Generación JWT
-    const token = await generateJWT(user.id);
+    const token = await generateJWT(user.id, user.role);
 
     return res.status(201).json({
-      ok: true,
       id: user.id,
       name: user.name,
       email: user.email,
@@ -93,7 +96,8 @@ const login = async (req, res = response) => {
     console.log(error);
     return res.status(500).json({
       ok: false,
-      msg: 'Se ha producido un error en la aplicación, contacte con el administrador'
+      code: errorCodes.ERR500.code,
+      msg: errorCodes.ERR500.msg,
     });
   }
 }
@@ -110,15 +114,15 @@ const renew = async (req, res) => {
   if(!user){
     return res.status(400).json({
       ok: false,
-      msg: 'Credenciales incorrectas'
+      code: errorCodes.ERR400.code,
+      msg: errorCodes.ERR400.msg,
     });
   }
 
   // Generación JWT
-  const token = await generateJWT(id);
+  const token = await generateJWT(user.id, user.role);
 
   return res.json({
-    ok: true,
     id,
     name: user.name, 
     email: user.email,

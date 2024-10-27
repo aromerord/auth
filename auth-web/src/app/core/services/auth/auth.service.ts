@@ -49,6 +49,7 @@ export class AuthService {
    * @returns Datos del usuario y token
    */
   public validateToken(): Observable<boolean> {
+
     const headers = new HttpHeaders().set(
       'x-token',
       localStorage.getItem('token') || ''
@@ -56,7 +57,10 @@ export class AuthService {
     return this.http.get<User>(`${this.url}/renew`, { headers }).pipe(
       map((res) => {
         this.setToken(res);
-        return res.ok!;
+        if(res.id){
+          return true;
+        }
+        return false;
       }),
       catchError((e) => of(false))
     );

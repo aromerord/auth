@@ -51,8 +51,8 @@ export class LoginComponent {
     };
     this.authService.login(req).subscribe({
       next: (res: any) => {
-        if (res.ok) {
-          this.translate.get('loginOk').subscribe((msg: string) => {
+        if (res.id) {
+          this.translate.get('login_ok').subscribe((msg: string) => {
             this.toast.success(msg);
           });
           this.router.navigateByUrl('/perfil');
@@ -61,7 +61,7 @@ export class LoginComponent {
         }
       },
       error: (e: any) => {
-        this.translate.get('error').subscribe((msg: string) => {
+        this.translate.get('err500').subscribe((msg: string) => {
           this.toast.error(msg);
         });
       },

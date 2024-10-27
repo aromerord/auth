@@ -26,5 +26,3 @@ app.use('/user', require('./routes/user'));
 app.listen(process.env.PORT, () => {
     console.log(`Conexión con el servidor establecida en el puerto ${process.env.PORT}`);
 });
-
-//console.log(process.env); // Variables de entorno

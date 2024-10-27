@@ -1,32 +1,33 @@
-<h3 class="mb-3">Usuarios</h3>
+<h3 class="mb-3">{{'users' | translate}}</h3>
 
 <table class="table table-striped">
   <thead>
     <tr>
-      <th scope="col" style="width: 40%;">Nombre</th>
-      <th scope="col" style="width: 30%;">Email</th>
-      <th scope="col" style="width: 15%;">Rol</th>
-      <th scope="col" style="width: 15%;">Acciones</th>
+      <th scope="col" style="width: 30%;">{{'name' | translate}}</th>
+      <th scope="col" style="width: 30%;">{{'email' | translate}}</th>
+      <th scope="col" style="width: 25%;">{{'registration' | translate}}</th>
+      <th scope="col" style="width: 15%;">{{'actions' | translate}}</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>Alvaro García</td>
-      <td>alvaro.com</td>
-      <td>user</td>
-      <td>eliminar</td>
-    </tr>
-    <tr>
-      <td>Alvaro García</td>
-      <td>alvaro.com</td>
-      <td>user</td>
-      <td>eliminar</td>
-    </tr>
-    <tr>
-      <td>Alvaro García</td>
-      <td>alvaro.email.com</td>
-      <td>user</td>
-      <td>eliminar</td>
-    </tr>
+    @for (user of usersToShow | slice: (page-1) * pageSize : page * pageSize; track $index) {
+      <tr>
+        <td>{{user.name}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.registerDate | date:'dd/MM/yyyy' }}</td>
+        <td>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modal"
+          (click)="setIdUserToDelete(user.id)">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+        </td>
+      </tr>
+    }
+
   </tbody>
 </table>
+<ngb-pagination *ngIf="usersToShow && usersToShow.length > 0" [collectionSize]="usersToShow.length"
+  [pageSize]="pageSize" [(page)]="page">
+</ngb-pagination>
+
+<app-user-modal id={{idUser}} (userModalEvent)="reloadTable($event)"></app-user-modal>
